@@ -15,6 +15,9 @@ const routes: Routes = [
     {
         path: ':zipCode',
         component: MultiDayForecastPageComponent,
+        data: {
+            days: 5
+        }
     }
 ];
 

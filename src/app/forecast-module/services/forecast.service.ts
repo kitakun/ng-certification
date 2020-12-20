@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 // Locals
 import { StorageService } from 'src/app/core-module/services';
 import { IForecastData, WeatherResponseData } from '../models';
@@ -46,6 +47,38 @@ export class ForecastService {
         }
     }
 
+    getForecastForDays(zipCode: string, days: number): Observable<IForecastData[]> {
+        return this.weatherApi.getMultipleDaysWeatherByZipCode(zipCode)
+            .pipe(map(resp => {
+                const currentDay = new Date().setHours(0, 0, 0, 0);
+                const resultArray: IForecastData[] = [];
+                let previousDate = null;
+                for (const respDay of resp.list) {
+                    const respDayDate = new Date(respDay.dt * 1000).setHours(0, 0, 0, 0);
+                    const diffTime = Math.abs(respDayDate - currentDay);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays >= days) {
+                        break;
+                    }
+                    previousDate = new Date(respDay.dt * 1000).setHours(0, 0, 0, 0);
+                    // TODO do I need to make totals?
+                    if (!resultArray.find(f => f.date === previousDate)) {
+                        resultArray.push({
+                            zipCode: zipCode,
+                            // Loaded
+                            locationName: resp.city.name,
+                            currentConditions: respDay.weather[0].main,
+                            maxToday: respDay.main.temp_max,
+                            minToday: respDay.main.temp_min,
+                            temperature: respDay.main.temp,
+                            date: previousDate,
+                        });
+                    }
+                }
+                return resultArray;
+            }));
+    }
+
     private loadForecastFromStorage(): void {
         const existingZipCodesData = this.dataService.getData<string[]>(forecastStorageKey);
         if (existingZipCodesData) {
@@ -68,6 +101,7 @@ export class ForecastService {
                 maxToday: loadedData.main.temp_max,
                 minToday: loadedData.main.temp_min,
                 temperature: loadedData.main.temp,
+                date: loadedData.dt * 1000,
             });
             this.addedZipCodes$.next(this.forecastData);
         } else {

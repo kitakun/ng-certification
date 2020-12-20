@@ -6,4 +6,5 @@ export interface IForecastData {
     maxToday: number;
     minToday: number;
     locationName: string;
+    date: number;
 }

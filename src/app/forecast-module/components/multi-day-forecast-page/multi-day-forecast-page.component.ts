@@ -1,5 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+// Locals
+import { ForecastService } from "../../services";
+
+const defaultDaysForForecast = 5;
 
 @Component({
     selector: 'app-multi-day-forecast-page',
@@ -7,12 +11,24 @@ import { ActivatedRoute } from "@angular/router";
     styleUrls: []
 })
 export class MultiDayForecastPageComponent implements OnInit {
+    readonly daysLength: number;
+    forecastDetails = [];
 
     constructor(
-        private activatedRoute: ActivatedRoute
-    ) { }
+        private readonly activatedRoute: ActivatedRoute,
+        private readonly forecastService: ForecastService,
+    ) {
+        this.daysLength = this.activatedRoute.snapshot.data.days || defaultDaysForForecast;
+    }
 
     ngOnInit() {
         const routeZipCode = this.activatedRoute.snapshot.paramMap.get('zipCode');
+        if (routeZipCode && routeZipCode.length) {
+            this.forecastService
+                .getForecastForDays(routeZipCode, this.daysLength)
+                .subscribe(resp => this.forecastDetails = resp);
+        } else {
+            console.error(`Zip code is missed! We can't show you forecast`);
+        }
     }
 }

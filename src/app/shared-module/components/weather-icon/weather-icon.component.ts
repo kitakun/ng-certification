@@ -4,14 +4,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 @Component({
     selector: 'app-weather-icon',
     templateUrl: './weather-icon.component.html',
+    styleUrls: ['./weather-icon.styles.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WeatherIconComponent {
     @Input()
     weatherName: 'Clear' | 'Clouds' | 'Rain' | 'Snow' = 'Clear';
-
-    @Input()
-    isSmall = false;
 
     get iconUrl(): SafeResourceUrl {
         switch (this.weatherName) {

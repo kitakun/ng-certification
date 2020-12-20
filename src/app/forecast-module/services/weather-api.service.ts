@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 // Locals
-import { WeatherResponseData } from '../models';
+import { WeatherMultipleDayResponseData, WeatherResponseData } from '../models';
 import { WEATHER_API_CONFIG, WeatherApiConfigParams } from '../config';
 
 @Injectable()
@@ -14,11 +14,13 @@ export class WeatcherApiService {
     ) {
     }
 
-    getCurrentWeatherByZipCode(
-        zipCode: string
-    ): Observable<WeatherResponseData> {
-        return this.http.get<WeatherResponseData>(
-            `http://${this.weatherApiConfigs.apiUrl}/weather?zip=${zipCode}&appid=${this.weatherApiConfigs.appId}`
-        );
+    getCurrentWeatherByZipCode(zipCode: string): Observable<WeatherResponseData> {
+        const url = `http://${this.weatherApiConfigs.apiUrl}/weather?zip=${zipCode}&appid=${this.weatherApiConfigs.appId}`;
+        return this.http.get<WeatherResponseData>(url);
+    }
+
+    getMultipleDaysWeatherByZipCode(zipCode: string): Observable<WeatherMultipleDayResponseData> {
+        const url = `http://${this.weatherApiConfigs.apiUrl}/forecast?zip=${zipCode}&appid=${this.weatherApiConfigs.appId}`;
+        return this.http.get<WeatherMultipleDayResponseData>(url);
     }
 }
