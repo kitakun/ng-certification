@@ -1,0 +1,23 @@
+<div class="well flex">
+    <div>
+        <h3>{{forecast.locationName}} ({{forecast.zipCode}})</h3>
+        <h4>Current conditions: {{ forecast.currentConditions }}</h4>
+        <h4>Temperatures today:</h4>
+        <p>
+            Current <b>{{forecast.temperature | toCelsius}}</b>
+        </p>
+        <p>
+            Max <b>{{forecast.maxToday | toCelsius}}</b>
+        </p>
+        <p>
+            Min <b>{{forecast.minToday | toCelsius}}</b>
+        </p>
+        <p>
+            <a [routerLink]="['/forecast', forecast.zipCode]">Show 5-day forecast for Rancho Cordova</a>
+        </p>
+    </div>
+    <div>
+        <span class="close" (click)="onClose()">×</span>
+        <app-weather-icon [weatherName]="forecast.currentConditions"></app-weather-icon>
+    </div>
+</div>
