@@ -13,6 +13,7 @@ const defaultDaysForForecast = 5;
 export class MultiDayForecastPageComponent implements OnInit {
     readonly daysLength: number;
     forecastDetails = [];
+    isLoading = false;
 
     constructor(
         private readonly activatedRoute: ActivatedRoute,
@@ -24,9 +25,13 @@ export class MultiDayForecastPageComponent implements OnInit {
     ngOnInit() {
         const routeZipCode = this.activatedRoute.snapshot.paramMap.get('zipCode');
         if (routeZipCode && routeZipCode.length) {
+            this.isLoading = true;
             this.forecastService
                 .getForecastForDays(routeZipCode, this.daysLength)
-                .subscribe(resp => this.forecastDetails = resp);
+                .subscribe(
+                    resp => this.forecastDetails = resp,
+                    (err) => console.error(err),
+                    () => this.isLoading = false);
         } else {
             console.error(`Zip code is missed! We can't show you forecast`);
         }

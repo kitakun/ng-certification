@@ -3,8 +3,8 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">{{daysLength}}-day forecast for Rancho Cordova</h3>
-
         </div>
+        <app-loading-indicator *ngIf="isLoading"></app-loading-indicator>
         <ul class="list-group">
             <!---->
             <li class="list-group-item" *ngFor="let forecast of forecastDetails">

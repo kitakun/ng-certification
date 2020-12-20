@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 // locals
 import {
+    LoadingIndicatorComponent,
     NotFoundComponent,
     WeatherIconComponent,
 } from './components';
@@ -13,6 +14,7 @@ import {
 const sharedComponents = [
     NotFoundComponent,
     WeatherIconComponent,
+    LoadingIndicatorComponent,
 ];
 
 @NgModule({
